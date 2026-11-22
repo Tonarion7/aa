@@ -75,6 +75,32 @@ def remap(t: float, keep: list[tuple[float, float]]) -> float:
     return out
 
 
+def speech_onset(path: Path) -> float:
+    """음성 파일에서 실제 소리가 처음 시작되는 시각을 찾는다."""
+    res = subprocess.run(["ffmpeg", "-i", str(path), "-af", "silencedetect=n=-40dB:d=0.05",
+                          "-f", "null", "-"], capture_output=True, text=True)
+    first_start = first_end = None
+    for line in res.stderr.splitlines():
+        if "silence_start" in line and first_start is None:
+            first_start = float(line.split("silence_start:")[1].split()[0])
+        elif "silence_end" in line and first_end is None:
+            first_end = float(line.split("silence_end:")[1].split("|")[0])
+            break
+    if first_start is not None and first_start <= 0.01 and first_end is not None:
+        return first_end
+    return 0.0
+
+
+def align_words(src: Path, words: list[dict]) -> list[dict]:
+    """edge-tts의 단어 시각은 실제 소리보다 조금 이를 때가 있어, 첫 소리 시작에 맞춰 민다."""
+    if not words:
+        return words
+    shift = speech_onset(src) - words[0]["start"]
+    if not 0 < shift < 0.6:
+        return words
+    return [{**w, "start": w["start"] + shift, "end": w["end"] + shift} for w in words]
+
+
 def tighten(src: Path, dst: Path, words: list[dict], max_gap: float) -> list[dict]:
     """대사 사이 긴 공백을 잘라 내고, 단어 시간도 거기에 맞춰 옮긴다."""
     keep = keep_intervals(words, audio_duration(src), max_gap)
@@ -96,7 +122,7 @@ def synthesize(text: str, voice: str, rate: str, out_dir: Path, name: str,
     out_dir.mkdir(parents=True, exist_ok=True)
     meta_path = out_dir / f"{name}.json"
     audio = out_dir / (f"{name}.wav" if silent else f"{name}.mp3")
-    key = {"text": text, "voice": voice, "rate": rate, "silent": silent, "max_gap": max_gap, "pitch": pitch}
+    key = {"text": text, "voice": voice, "rate": rate, "silent": silent, "max_gap": max_gap, "pitch": pitch, "v": 2}
 
     if audio.exists() and meta_path.exists():
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
@@ -109,6 +135,7 @@ def synthesize(text: str, voice: str, rate: str, out_dir: Path, name: str,
     else:
         raw = out_dir / f"{name}_raw.mp3"
         words = asyncio.run(_edge_tts(text, voice, rate, raw, pitch or "+0Hz"))
+        words = align_words(raw, words)
         if max_gap and words:
             words = tighten(raw, audio, words, max_gap)
         else:

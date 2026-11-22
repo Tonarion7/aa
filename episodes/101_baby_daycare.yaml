@@ -17,31 +17,34 @@ characters:
     rate: "+45%"
   엄마:
     voice: "ko-KR-SunHiNeural"
-    rate: "+40%"
+    pitch: "-10Hz"
+    rate: "+35%"
+# 참고: 무료 edge-tts 한국어 목소리는 SunHi(여), InJoon(남), Hyunsu(남) 정도라 캐릭터 구분이 제한적입니다.
+# 반응이 좋으면 타입캐스트 같은 유료 음성으로 바꾸면 캐릭터가 훨씬 살아납니다.
 
 scenes:
   - voice: 아기
-    text: "아침 7시 반. 엄마가 저 가방을 꺼냈다. 이건 전쟁이다."
+    text: "아침 7시 반. 엄마가 노란 가방을 꺼냈다. 저건 어린이집 가방이다. 이건 전쟁이다."
     visual: { type: video, path: assets/clips/101/01.mp4 }
 
   - voice: 엄마
-    text: "도윤아, 어린이집 가자!"
+    text: "도윤아! 양말 신고 어린이집 가자~"
     visual: { type: video, path: assets/clips/101/02.mp4 }
 
   - voice: 아기
-    text: "1단계, 못 들은 척하기. 나는 지금 아주 바쁜 블록 기술자다."
+    text: "작전 1단계, 못 들은 척하기. 나는 지금 아주 바쁜 블록 기술자다. 이 탑이 무너지면 세상이 끝난다."
     visual: { type: video, path: assets/clips/101/03.mp4 }
 
   - voice: 아기
-    text: "2단계, 필살 애교. 이 눈빛을 이긴 엄마는 아직 없었다."
+    text: "작전 2단계, 필살 눈빛. 이 눈빛을 이긴 엄마는 지금까지 한 명도 없었다."
     visual: { type: video, path: assets/clips/101/04.mp4 }
 
   - voice: 엄마
-    text: "오늘 간식 딸기래."
+    text: "근데 오늘 어린이집 간식, 딸기래."
     visual: { type: video, path: assets/clips/101/05.mp4 }
 
   - voice: 아기
-    text: "딸기...? 협상 결렬. 신발 어디 있지?"
+    text: "딸기...? 잠깐. 협상 결렬. 엄마, 내 신발 어디 있어?"
     visual: { type: video, path: assets/clips/101/06.mp4 }
 
 hashtags: ["아기", "육아", "속마음", "AI", "shorts"]
