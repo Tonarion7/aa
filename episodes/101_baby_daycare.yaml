@@ -1,6 +1,7 @@
 # AI 캐릭터 쇼츠 샘플: 어린이집 가기 싫은 아기의 속마음
 # 화면은 AI 영상 생성기(Veo, Kling 등)로 만든 클립을 씁니다. 클립 만드는 법: prompts/101_baby_daycare_clips.md
 # 대사는 아기 "속마음" 형식이라 입모양을 맞출 필요가 없습니다.
+# 장면의 visual에 start: 초 를 쓰면 클립의 그 지점부터 씁니다.
 
 layout: full   # 영상이 화면 전체를 채웁니다
 
@@ -41,7 +42,7 @@ scenes:
 
   - voice: 엄마
     text: "근데 오늘 어린이집 간식, 딸기래."
-    visual: { type: video, path: assets/clips/101/05.mp4 }
+    visual: { type: video, path: assets/clips/101/05.mp4, start: 4 }  # 클립 4초 지점(딸기 그릇이 나오는 곳)부터 사용
 
   - voice: 아기
     text: "딸기...? 잠깐. 협상 결렬. 엄마, 내 신발 어디 있어?"

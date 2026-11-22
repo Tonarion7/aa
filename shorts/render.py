@@ -23,14 +23,15 @@ FULL_CAP_Y = 1250  # 전체 화면 모드에서 자막 위치
 
 def _scene_video(layout: Path, visual: Path, is_video: bool, full: bool, audio: Path,
                  caps: list[tuple[Path, float, float]], credit: Path | None, duration: float,
-                 zoom: bool, clip_volume: float, fps: int, out: Path) -> None:
+                 zoom: bool, clip_volume: float, fps: int, out: Path, clip_start: float = 0.0) -> None:
     """한 장면을 영상으로 만든다.
     full=False: 위 제목 틀 + 가운데 정사각형 그림(지도, 카드, 사진, 영상) + 아래 자막
     full=True : 영상(또는 그림)이 화면 전체, 그 위에 제목과 자막
     """
     t = f"{duration:.3f}"
     still = ["-loop", "1", "-framerate", str(fps), "-t", t]
-    vis_in = (["-stream_loop", "-1", "-t", t, "-i", str(visual)] if is_video
+    seek = ["-ss", f"{clip_start:.3f}"] if clip_start > 0 else []
+    vis_in = (seek + ["-stream_loop", "-1", "-t", t, "-i", str(visual)] if is_video
               else still + ["-i", str(visual)])
     w, h = (vis.W, vis.H) if full else (vis.VIS, vis.VIS)
     frames = max(1, round(duration * fps))
@@ -120,7 +121,8 @@ def make_episode(ep: Episode, cfg: dict, episode_path: Path, out_root: Path,
         if is_video and not _has_audio(visual):
             clip_vol = 0.0
         _scene_video(layout, visual, is_video, full, audio, cap_pngs, credit_png, duration,
-                     scene.visual.get("zoom_effect", True), clip_vol, fps, seg)
+                     scene.visual.get("zoom_effect", True), clip_vol, fps, seg,
+                     clip_start=float(scene.visual.get("start", 0)) if is_video else 0.0)
         segments.append(seg)
         total += duration
 
