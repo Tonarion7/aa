@@ -90,6 +90,15 @@ def render_caption(text: str, cfg: dict, out: Path) -> Path:
     d = ImageDraw.Draw(img)
     f = font(cfg["font"], 76)
     lines = _wrap(d, text, f, W - 120)
+    if len(lines) == 2:
+        # 두 줄이면 줄 길이를 비슷하게 맞춘다 (둘째 줄에 한 단어만 남지 않게)
+        words = text.split()
+        best = min(range(1, len(words)),
+                   key=lambda k: max(d.textlength(" ".join(words[:k]), font=f),
+                                     d.textlength(" ".join(words[k:]), font=f)))
+        cand = [" ".join(words[:best]), " ".join(words[best:])]
+        if all(d.textlength(x, font=f) <= W - 120 for x in cand):
+            lines = cand
     lh = 96
     y = (CAP_H - lh * len(lines)) // 2
     for line in lines:
