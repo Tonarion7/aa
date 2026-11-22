@@ -1,0 +1,21 @@
+# 쇼츠 제작 설정. 비워 두면 기본값을 씁니다.
+
+# 한글 굵은 글꼴. 비워 두면 윈도우의 맑은 고딕(malgunbd.ttf)을 자동으로 찾습니다.
+font: ""
+
+# AI 음성 (edge-tts). 남성: ko-KR-InJoonNeural / 여성: ko-KR-SunHiNeural
+voice: "ko-KR-InJoonNeural"
+rate: "+8%"        # 말 빠르기. 쇼츠는 조금 빠른 편이 좋습니다.
+
+fps: 30
+scene_pause: 0.25  # 장면 사이 쉬는 시간(초)
+
+# 배경음악. 유튜브 오디오 보관함에서 받은 파일 경로를 적으세요 (예: assets/bgm/calm.mp3)
+bgm:
+  path: ""
+  volume: 0.12
+
+colors:
+  title_accent: "#ffd400"
+  map_line: "#ff3b30"
+  map_marker: "#ffd400"
