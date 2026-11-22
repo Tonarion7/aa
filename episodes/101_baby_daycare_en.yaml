@@ -1,0 +1,47 @@
+# English version of 101 (same clips). For international viewers.
+# Toddler's inner voice, so no lip-sync is needed.
+# Tip: punctuation shapes the intonation. "..." adds a pause, "?!" adds surprise.
+
+layout: full
+language: en
+
+title: "Toddler's Secret Plan to Skip Daycare 😂 #baby #toddler #funny #shorts"
+hook:
+  - "Toddler vs. Daycare"
+  - "The Negotiation"
+
+# Voices: the first available one in each list is used.
+characters:
+  baby:
+    voice: ["en-US-AnaNeural"]          # child voice
+    rate: "+15%"
+  mom:
+    voice: ["en-US-AvaMultilingualNeural", "en-US-EmmaMultilingualNeural", "en-US-JennyNeural"]
+    rate: "+15%"
+
+scenes:
+  - voice: baby
+    text: "7:30 a.m. Mom just pulled out the yellow backpack. The daycare backpack... This means war."
+    visual: { type: video, path: assets/clips/101/01.mp4 }
+
+  - voice: mom
+    text: "Leo, sweetie! Socks on, it's daycare time!"
+    visual: { type: video, path: assets/clips/101/02.mp4 }
+
+  - voice: baby
+    text: "Phase one: pretend I can't hear her. I'm a very busy block engineer. If this tower falls, the world ends."
+    visual: { type: video, path: assets/clips/101/03.mp4 }
+
+  - voice: baby
+    text: "Phase two: the puppy eyes. No mom in history has ever survived this look."
+    visual: { type: video, path: assets/clips/101/04.mp4 }
+
+  - voice: mom
+    text: "Oh, by the way... they're having strawberries for snack today."
+    visual: { type: video, path: assets/clips/101/05.mp4, start: 4 }
+
+  - voice: baby
+    text: "Strawberries?! Okay. Negotiations are over. Mom, where are my shoes?"
+    visual: { type: video, path: assets/clips/101/06.mp4 }
+
+hashtags: ["baby", "toddler", "funny", "parenting", "AI", "shorts"]
