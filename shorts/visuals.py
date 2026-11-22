@@ -84,6 +84,23 @@ def render_caption(text: str, cfg: dict, out: Path) -> Path:
     return out
 
 
+# ---------- 출처 표기 ----------
+# 확대 효과 때문에 그림 안에 넣으면 출처가 화면 밖으로 밀리므로, 확대와 상관없이 고정된 위치에 따로 얹는다.
+CREDIT_H = 44
+
+
+def render_credit(texts: list[str], cfg: dict, out: Path) -> Path:
+    text = " · ".join(texts)
+    img = Image.new("RGBA", (W, CREDIT_H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    f = font(cfg["font"], 24)
+    tw = d.textlength(text, font=f)
+    d.rectangle([W - tw - 28, 0, W, CREDIT_H], fill=(0, 0, 0, 170))
+    d.text((W - 14, CREDIT_H // 2), text, font=f, fill="#ffffff", anchor="rm")
+    img.save(out)
+    return out
+
+
 # ---------- 지도 ----------
 
 def _project(lat: float, lon: float, z: int) -> tuple[float, float]:
@@ -166,10 +183,6 @@ def render_map(v: dict, cfg: dict, out: Path) -> tuple[Path, list[str]]:
     if ok:
         att = cfg["map"]["attribution"]
         credits.append(att)
-        af = font(cfg["font"], 36)
-        tw = d.textlength(att, font=af)
-        d.rectangle([size - tw - 40, size - 64, size, size], fill="#ffffffcc")
-        d.text((size - 20, size - 32), att, font=af, fill="#333333", anchor="rm")
     img.save(out)
     return out, credits
 
@@ -187,14 +200,8 @@ def render_image(v: dict, cfg: dict, base_dir: Path, out: Path) -> tuple[Path, l
     img = img.resize((math.ceil(img.width * scale), math.ceil(img.height * scale)), Image.LANCZOS)
     left, upper = (img.width - size) // 2, (img.height - size) // 2
     img = img.crop((left, upper, left + size, upper + size))
-    d = ImageDraw.Draw(img)
-    credit = v["credit"]
-    af = font(cfg["font"], 36)
-    tw = d.textlength(credit, font=af)
-    d.rectangle([size - tw - 40, size - 64, size, size], fill="#000000")
-    d.text((size - 20, size - 32), credit, font=af, fill="#ffffff", anchor="rm")
     img.save(out)
-    return out, [credit]
+    return out, [v["credit"]]
 
 
 # ---------- 카드 (연도, 숫자, 핵심 문장) ----------

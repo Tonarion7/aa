@@ -19,7 +19,7 @@ def _run(cmd: list[str]) -> None:
 
 
 def _scene_video(layout: Path, visual: Path, audio: Path, caps: list[tuple[Path, float, float]],
-                 duration: float, zoom: bool, fps: int, out: Path) -> None:
+                 credit: Path | None, duration: float, zoom: bool, fps: int, out: Path) -> None:
     frames = max(1, round(duration * fps))
     step = 0.08 / frames  # 장면이 끝날 때 8% 확대되도록
     if zoom:
@@ -33,10 +33,13 @@ def _scene_video(layout: Path, visual: Path, audio: Path, caps: list[tuple[Path,
            "-loop", "1", "-framerate", str(fps), "-t", f"{duration:.3f}", "-i", str(visual),
            "-i", str(audio)]
     last = "b0"
-    for i, (png, start, end) in enumerate(caps):
+    overlays = [(p, vis.CAP_Y, s, e) for p, s, e in caps]
+    if credit:
+        overlays.append((credit, vis.VIS_Y + vis.VIS - vis.CREDIT_H, 0.0, duration))
+    for i, (png, y, start, end) in enumerate(overlays):
         cmd += ["-loop", "1", "-framerate", str(fps), "-t", f"{duration:.3f}", "-i", str(png)]
         nxt = f"b{i + 1}"
-        parts.append(f"[{last}][{i + 3}:v]overlay=0:{vis.CAP_Y}:"
+        parts.append(f"[{last}][{i + 3}:v]overlay=0:{y}:"
                      f"enable='between(t,{start:.3f},{end:.3f})'[{nxt}]")
         last = nxt
     cmd += ["-filter_complex", ";".join(parts) + f";[{last}]format=yuv420p[v];[2:a]apad[a]",
@@ -72,8 +75,9 @@ def make_episode(ep: Episode, cfg: dict, episode_path: Path, out_root: Path,
         visual, vcredits = vis.render_visual(scene.visual, cfg, episode_path.parent,
                                              tmp / f"visual{i:02d}.png")
         credits += [c for c in vcredits if c not in credits]
+        credit_png = vis.render_credit(vcredits, cfg, tmp / f"credit{i:02d}.png") if vcredits else None
         seg = tmp / f"scene{i:02d}.mp4"
-        _scene_video(layout, visual, audio, cap_pngs, duration,
+        _scene_video(layout, visual, audio, cap_pngs, credit_png, duration,
                      scene.visual.get("zoom_effect", True), fps, seg)
         segments.append(seg)
         total += duration
