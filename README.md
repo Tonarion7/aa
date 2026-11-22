@@ -46,6 +46,23 @@ python -m shorts episodes\001_gangnam.yaml
 
 주제 후보는 `docs/topics.md`에 있습니다.
 
+## AI 캐릭터 쇼츠 만들기 (전체 화면 모드)
+
+AI 영상 생성기로 만든 캐릭터 클립 위에 대사(AI 음성)와 자막을 얹습니다. 샘플: `episodes/101_baby_daycare.yaml`
+
+1. `prompts/101_baby_daycare_clips.md`의 프롬프트로 Google Flow(Veo)나 Kling에서 클립을 만듭니다.
+2. 클립을 `assets\clips\101\01.mp4`처럼 장면 순서대로 저장합니다.
+3. `.venv\Scripts\python -m shorts episodes\101_baby_daycare.yaml`
+
+- 대본 맨 위의 `layout: full`이 전체 화면 모드입니다.
+- `characters`에 캐릭터별 목소리(`voice`), 높낮이(`pitch`), 속도(`rate`)를 정해 두고, 장면마다 `voice: 아기`처럼 캐릭터 이름을 쓰면 됩니다.
+- 클립에 소리가 있으면 30% 크기로 섞습니다. 장면의 `visual`에 `clip_volume: 0`을 쓰면 끕니다.
+- 실존 인물(특히 아이)의 사진·영상으로 클립을 만들지 않습니다. 업로드할 때 "변경되거나 합성된 콘텐츠"를 **예**로 표시합니다.
+
+## 말 속도와 공백
+
+`config.yaml`의 `rate: "+50%"`가 1.5배 속도이고, `max_gap: 0.12`가 대사 사이 공백을 0.12초까지만 남기고 잘라 냅니다.
+
 ## 저작권과 출처 규칙
 
 - 지도는 OpenStreetMap을 쓰며, 화면과 설명란에 "© OpenStreetMap contributors"가 자동으로 들어갑니다. 받은 지도 조각은 `cache/`에 저장해 같은 지도를 다시 받지 않습니다.

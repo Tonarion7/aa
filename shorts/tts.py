@@ -18,10 +18,10 @@ def audio_duration(path: Path) -> float:
     return float(out.stdout.strip())
 
 
-async def _edge_tts(text: str, voice: str, rate: str, mp3: Path) -> list[dict]:
+async def _edge_tts(text: str, voice: str, rate: str, mp3: Path, pitch: str = "+0Hz") -> list[dict]:
     import edge_tts
 
-    comm = edge_tts.Communicate(text, voice, rate=rate, boundary="WordBoundary")
+    comm = edge_tts.Communicate(text, voice, rate=rate, pitch=pitch, boundary="WordBoundary")
     words = []
     with open(mp3, "wb") as f:
         async for chunk in comm.stream():
@@ -90,12 +90,13 @@ def tighten(src: Path, dst: Path, words: list[dict], max_gap: float) -> list[dic
 
 
 def synthesize(text: str, voice: str, rate: str, out_dir: Path, name: str,
-               silent: bool = False, max_gap: float | None = None) -> tuple[Path, list[dict], float]:
+               silent: bool = False, max_gap: float | None = None,
+               pitch: str | None = None) -> tuple[Path, list[dict], float]:
     """음성 파일 경로, 단어 시간 목록, 길이(초)를 돌려준다. 같은 대본이면 다시 만들지 않는다."""
     out_dir.mkdir(parents=True, exist_ok=True)
     meta_path = out_dir / f"{name}.json"
     audio = out_dir / (f"{name}.wav" if silent else f"{name}.mp3")
-    key = {"text": text, "voice": voice, "rate": rate, "silent": silent, "max_gap": max_gap}
+    key = {"text": text, "voice": voice, "rate": rate, "silent": silent, "max_gap": max_gap, "pitch": pitch}
 
     if audio.exists() and meta_path.exists():
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
@@ -107,7 +108,7 @@ def synthesize(text: str, voice: str, rate: str, out_dir: Path, name: str,
         words = []
     else:
         raw = out_dir / f"{name}_raw.mp3"
-        words = asyncio.run(_edge_tts(text, voice, rate, raw))
+        words = asyncio.run(_edge_tts(text, voice, rate, raw, pitch or "+0Hz"))
         if max_gap and words:
             words = tighten(raw, audio, words, max_gap)
         else:

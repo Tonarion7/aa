@@ -1,0 +1,47 @@
+# AI 캐릭터 쇼츠 샘플: 어린이집 가기 싫은 아기의 속마음
+# 화면은 AI 영상 생성기(Veo, Kling 등)로 만든 클립을 씁니다. 클립 만드는 법: prompts/101_baby_daycare_clips.md
+# 대사는 아기 "속마음" 형식이라 입모양을 맞출 필요가 없습니다.
+
+layout: full   # 영상이 화면 전체를 채웁니다
+
+title: "어린이집 가기 싫은 아기의 협상 기술 ㅋㅋ #아기 #속마음"
+hook:
+  - "어린이집 가기 싫은"
+  - "아기의 협상 기술"
+
+# 캐릭터별 목소리. 장면의 voice에 캐릭터 이름을 쓰면 이 설정을 씁니다.
+characters:
+  아기:
+    voice: "ko-KR-SunHiNeural"
+    pitch: "+45Hz"
+    rate: "+45%"
+  엄마:
+    voice: "ko-KR-SunHiNeural"
+    rate: "+40%"
+
+scenes:
+  - voice: 아기
+    text: "아침 7시 반. 엄마가 저 가방을 꺼냈다. 이건 전쟁이다."
+    visual: { type: video, path: assets/clips/101/01.mp4 }
+
+  - voice: 엄마
+    text: "도윤아, 어린이집 가자!"
+    visual: { type: video, path: assets/clips/101/02.mp4 }
+
+  - voice: 아기
+    text: "1단계, 못 들은 척하기. 나는 지금 아주 바쁜 블록 기술자다."
+    visual: { type: video, path: assets/clips/101/03.mp4 }
+
+  - voice: 아기
+    text: "2단계, 필살 애교. 이 눈빛을 이긴 엄마는 아직 없었다."
+    visual: { type: video, path: assets/clips/101/04.mp4 }
+
+  - voice: 엄마
+    text: "오늘 간식 딸기래."
+    visual: { type: video, path: assets/clips/101/05.mp4 }
+
+  - voice: 아기
+    text: "딸기...? 협상 결렬. 신발 어디 있지?"
+    visual: { type: video, path: assets/clips/101/06.mp4 }
+
+hashtags: ["아기", "육아", "속마음", "AI", "shorts"]

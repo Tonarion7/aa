@@ -66,6 +66,22 @@ def render_layout(hook: list[str], cfg: dict, out: Path) -> Path:
     return out
 
 
+def render_layout_full(hook: list[str], cfg: dict, out: Path) -> Path:
+    """전체 화면 모드: 투명 배경 위 맨 위에 제목만 얹는다."""
+    c = cfg["colors"]
+    img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    colors = [c["title"], c["title_accent"]] if len(hook) == 2 else [c["title_accent"]]
+    y = 150
+    for line, col in zip(hook, colors):
+        f = _fit_size(d, line, cfg["font"], 84, W - 80)
+        d.text((W // 2, y), line, font=f, fill=col, anchor="mt",
+               stroke_width=8, stroke_fill="#000000")
+        y += f.getbbox("가")[3] + 24
+    img.save(out)
+    return out
+
+
 # ---------- 자막 ----------
 
 def render_caption(text: str, cfg: dict, out: Path) -> Path:
@@ -228,8 +244,18 @@ def render_card(v: dict, cfg: dict, out: Path) -> tuple[Path, list[str]]:
     return out, []
 
 
+def resolve_path(p: str, base_dir: Path) -> Path:
+    src = Path(p)
+    if src.is_absolute():
+        return src
+    return (base_dir / src) if (base_dir / src).exists() else ROOT / src
+
+
 def render_visual(v: dict, cfg: dict, base_dir: Path, out: Path) -> tuple[Path, list[str]]:
     kind = v["type"]
+    if kind == "video":
+        # 영상은 그대로 쓰고, 출처가 있으면 표기한다 (AI로 만든 영상이면 생략 가능)
+        return resolve_path(v["path"], base_dir), ([v["credit"]] if v.get("credit") else [])
     if kind == "map":
         return render_map(v, cfg, out)
     if kind == "image":
