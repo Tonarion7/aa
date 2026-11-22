@@ -63,7 +63,8 @@ def make_episode(ep: Episode, cfg: dict, episode_path: Path, out_root: Path,
     for i, scene in enumerate(ep.scenes, 1):
         print(f"[{i}/{len(ep.scenes)}] {scene.visual['type']}: {scene.text[:24]}…")
         audio, words, dur = tts.synthesize(scene.text, voice, cfg["rate"], tmp / "tts",
-                                           f"scene{i:02d}", silent=silent)
+                                           f"scene{i:02d}", silent=silent,
+                                           max_gap=cfg.get("max_gap"))
         duration = dur + float(cfg["scene_pause"])
         chunks = cap.split_chunks(scene.text)
         timed = cap.time_chunks(chunks, words, dur)

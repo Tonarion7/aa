@@ -21,9 +21,10 @@ FONT_CANDIDATES = [
 DEFAULTS = {
     "font": "",
     "voice": "ko-KR-InJoonNeural",
-    "rate": "+8%",
+    "rate": "+50%",
+    "max_gap": 0.12,
     "fps": 30,
-    "scene_pause": 0.25,
+    "scene_pause": 0.05,
     "colors": {
         "background": "#0f1115",
         "title_band": "#000000",
