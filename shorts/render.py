@@ -104,7 +104,7 @@ def make_episode(ep: Episode, cfg: dict, episode_path: Path, out_root: Path,
                                            f"scene{i:02d}", silent=silent,
                                            max_gap=cfg.get("max_gap"), pitch=scene.pitch)
         duration = dur + float(cfg["scene_pause"])
-        chunks = cap.split_chunks(scene.text)
+        chunks = cap.split_chunks(scene.text, cap.MAX_CHARS.get(ep.language, 16))
         timed = cap.time_chunks(chunks, words, dur)
         cap_pngs = []
         for j, c in enumerate(timed, 1):

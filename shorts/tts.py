@@ -115,6 +115,19 @@ def tighten(src: Path, dst: Path, words: list[dict], max_gap: float) -> list[dic
     return [{**w, "start": remap(w["start"], keep), "end": remap(w["end"], keep)} for w in words]
 
 
+def _with_fallback(text: str, voice, rate: str, raw: Path, pitch: str) -> list[dict]:
+    """voice가 목록이면 앞에서부터 차례로 시도한다 (무료 음성 목록이 바뀌어도 멈추지 않게)."""
+    voices = voice if isinstance(voice, list) else [voice]
+    last = None
+    for v in voices:
+        try:
+            return asyncio.run(_edge_tts(text, v, rate, raw, pitch))
+        except Exception as e:  # 없는 목소리 이름 등
+            print(f"  [경고] 목소리 {v} 사용 실패, 다음 후보로: {e}")
+            last = e
+    raise RuntimeError(f"쓸 수 있는 목소리가 없습니다: {voices}") from last
+
+
 def synthesize(text: str, voice: str, rate: str, out_dir: Path, name: str,
                silent: bool = False, max_gap: float | None = None,
                pitch: str | None = None) -> tuple[Path, list[dict], float]:
@@ -134,7 +147,7 @@ def synthesize(text: str, voice: str, rate: str, out_dir: Path, name: str,
         words = []
     else:
         raw = out_dir / f"{name}_raw.mp3"
-        words = asyncio.run(_edge_tts(text, voice, rate, raw, pitch or "+0Hz"))
+        words = _with_fallback(text, voice, rate, raw, pitch or "+0Hz")
         words = align_words(raw, words)
         if max_gap and words:
             words = tighten(raw, audio, words, max_gap)

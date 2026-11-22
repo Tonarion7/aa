@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-MAX_CHARS = 16  # 자막 한 조각의 최대 글자 수(공백 제외)
+MAX_CHARS = {"ko": 16, "en": 26}  # 자막 한 조각의 최대 글자 수(공백·문장부호 제외)
 
 _PUNCT = re.compile(r"[\s\.,!?…·'\"“”‘’()\[\]~\-:;]")
 
@@ -20,7 +20,7 @@ def _plain_len(s: str) -> int:
     return len(_PUNCT.sub("", s))
 
 
-def split_chunks(text: str, max_chars: int = MAX_CHARS) -> list[str]:
+def split_chunks(text: str, max_chars: int = MAX_CHARS["ko"]) -> list[str]:
     """문장 단위로 끊은 뒤, 긴 문장은 띄어쓰기 기준으로 max_chars 이하가 되게 나눈다."""
     sentences = [s.strip() for s in re.split(r"(?<=[\.!?…])\s+", text.strip()) if s.strip()]
     chunks: list[str] = []

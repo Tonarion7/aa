@@ -14,7 +14,7 @@ LAYOUTS = {"explainer", "full"}
 class Scene:
     text: str
     visual: dict
-    voice: str | None = None   # 장면(대사)마다 다른 캐릭터 목소리
+    voice: str | list | None = None   # 장면(대사)마다 다른 캐릭터 목소리. 목록이면 앞에서부터 되는 것을 씀
     rate: str | None = None
     pitch: str | None = None   # 예: "+30Hz" 높이면 아이 목소리 느낌
 
@@ -30,6 +30,7 @@ class Episode:
     hashtags: list[str] = field(default_factory=list)
     voice: str | None = None
     layout: str = "explainer"
+    language: str = "ko"   # ko / en : 자막 길이 기준
 
 
 class EpisodeError(ValueError):
@@ -88,6 +89,7 @@ def load_episode(path: Path) -> Episode:
         hashtags=data.get("hashtags", []),
         voice=data.get("voice"),
         layout=_layout(data.get("layout", "explainer")),
+        language=data.get("language", "ko"),
     )
 
 
